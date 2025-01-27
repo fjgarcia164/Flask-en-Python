@@ -12,9 +12,9 @@ Vagrant.configure("2") do |config|
     display.vm.network "forwarded_port", guest: 5000, host: 5000
     #display.vm.network "private_network", ip: "192.168.50.20"
     display.vm.provision "shell", name: "basic_provision", inline: <<-SHELL
-        sudo apt-get update
-        sudo apt-get install -y python3-pip
-        apt-get install -y nginx
+         apt-get update
+         apt-get install -y python3-pip
+         apt-get install -y nginx
     SHELL
     display.vm.provision "shell", name: "basic_provision", privileged: false, inline: <<-SHELL
         pip3 install pipenv
@@ -30,6 +30,12 @@ Vagrant.configure("2") do |config|
         pipenv shell
         pipenv install flask gunicorn
         cp -r /vagrant/app /var/www/app
+        systemctl start nginx
+        cp -r /vagrant/flask_app.service /etc/systemd/system/flask_app.service
+        systemctl daemon-reload
+        systemctl enable flask_app
+        systemctl start flask_app
+        cp -r /vagrant/app.conf /etc/nginx/sites-available/app.conf
   SHELL
   end #display
 
