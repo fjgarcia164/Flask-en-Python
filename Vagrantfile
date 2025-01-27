@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "display" do |display|
     display.vm.hostname = "display"
     display.vm.network "forwarded_port", guest: 5000, host: 5000
-    #display.vm.network "private_network", ip: "192.168.50.20"
+    display.vm.network "private_network", ip: "192.168.50.20"
     display.vm.provision "shell", name: "basic_provision", inline: <<-SHELL
          apt-get update
          apt-get install -y python3-pip
@@ -36,6 +36,8 @@ Vagrant.configure("2") do |config|
         systemctl enable flask_app
         systemctl start flask_app
         cp -r /vagrant/app.conf /etc/nginx/sites-available/app.conf
+        ln -s /etc/nginx/sites-available/app.conf /etc/nginx/sites-enabled/
+        cp /vagrant/hosts /etc/hosts 
   SHELL
   end #display
 
