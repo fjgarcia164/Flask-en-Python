@@ -15,6 +15,7 @@ Vagrant.configure("2") do |config|
          apt-get update
          apt-get install -y python3-pip
          apt-get install -y nginx
+         apt-get install -y git
     SHELL
     display.vm.provision "shell", name: "basic_provision", privileged: false, inline: <<-SHELL
         pip3 install pipenv
@@ -37,7 +38,16 @@ Vagrant.configure("2") do |config|
         systemctl start flask_app
         cp -r /vagrant/app.conf /etc/nginx/sites-available/app.conf
         ln -s /etc/nginx/sites-available/app.conf /etc/nginx/sites-enabled/
-        cp /vagrant/hosts /etc/hosts 
+        cp /vagrant/hosts /etc/hosts
+
+        cd /var/www
+        sudo git clone https://github.com/Azure-Samples/msdocs-python-flask-webapp-quickstart
+        chown -R $USER:www-data /var/www/msdocs-python-flask-webapp-quickstart/
+        chmod -R 775 /var/www/msdocs-python-flask-webapp-quickstart/
+
+        cd /var/www/msdocs-python-flask-webapp-quickstar
+        pipenv shell
+
   SHELL
   end #display
 
